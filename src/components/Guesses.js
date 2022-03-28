@@ -221,7 +221,7 @@ function Guesses() {
                     })}
                 <Box as="span" margin="auto" pt="8px" h="40px" w="101" mr={1} onClick={backspace} bg="silver" >Back</Box>   
             </Box>
-                    {lose ? `Correct word ${secretWord} refresh to play again`: ""}
+                    {lose ? `Correct word ${secretWord.current} refresh to play again`: ""}
         </Box>
         </Box>
     )
