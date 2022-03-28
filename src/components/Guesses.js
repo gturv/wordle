@@ -19,6 +19,15 @@ function Guesses() {
     const [correctLetterWrongSpot, setCorrectLetterWrongSpot] = useState([])
     const [incorrectLetter, setIncorrectLetter] = useState([])
     const [lose, setLose] = useState(false)
+    const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
+
+    // <GridItem backgroundColor={correctSpot(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><Box width={12} height={12}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></Box></GridItem>
+    const letterBoxes = []
+    for (let guessNum of guessNumArray) {
+        for (let i=0; i < 5; i++) {
+            letterBoxes.push(<GridItem key={`${guessNum}${i}`} backgroundColor={correctSpot(i,guessNum,i+1)} className='letterGrid' rowSpan={1} colSpan={1}><Box width={12} height={12}><Text align='center' fontSize="4xl">{guessOne[i] || currentGuessWord[i]}</Text></Box></GridItem>)
+        }
+    }
 
     //console.log("secretWord:", secretWord)
     console.log("GUESSED LETTERS", correctLetterCorrectSpot, correctLetterWrongSpot, incorrectLetter)
@@ -152,10 +161,13 @@ function Guesses() {
         return 'silver'
     } 
 
+    // {letterBoxes}
+
     return (
         <Box>
         <Box p="5px 8px 17px 5px">
             <Grid templateColumns="repeat(5, 1fr)" templateRows="repeat(5, 1fr)" gap={4} >
+               
                 <GridItem backgroundColor={correctSpot(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><Box width={12} height={12}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></Box></GridItem>
                 <GridItem backgroundColor={correctSpot(1,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><Box width={12} height={12}><Text align="center" fontSize="4xl">{guessOne[1] || currentGuessWord[1]}</Text></Box></GridItem>
                 <GridItem backgroundColor={correctSpot(2,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><Box width={12} height={12}><Text align='center' fontSize="4xl">{guessOne[2] || currentGuessWord[2]}</Text></Box></GridItem>
@@ -209,7 +221,7 @@ function Guesses() {
                     })}
                 <Box as="span" margin="auto" pt="8px" h="40px" w="101" mr={1} onClick={backspace} bg="silver" >Back</Box>   
             </Box>
-                    {lose ? "refresh to play again": ""}
+                    {lose ? `Correct word ${secretWord} refresh to play again`: ""}
         </Box>
         </Box>
     )
