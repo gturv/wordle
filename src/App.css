@@ -1,0 +1,10 @@
+.letterGrid {
+  border-color: black;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.letterBox {
+  width: 12;
+  height: 12;
+}
