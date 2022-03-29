@@ -30,10 +30,10 @@ function Guesses() {
     }
 
     //console.log("secretWord:", secretWord)
-    console.log("GUESSED LETTERS", correctLetterCorrectSpot, correctLetterWrongSpot, incorrectLetter)
-    console.log("secretWord.current", secretWord.current, secretWord.current[0])
+    //console.log("GUESSED LETTERS", correctLetterCorrectSpot, correctLetterWrongSpot, incorrectLetter)
+    console.log("secretWord.current", secretWord.current)
 
-    function checkLetters() {
+    function checkLetters() { // adds guessed letters into state
         for (let i=0; i < 5; i++) {
             if (currentGuessWord[i] === secretWord.current[i] && !correctLetterCorrectSpot.includes(currentGuessWord[i])) {
                 setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
@@ -71,7 +71,7 @@ function Guesses() {
     }
     function submitGuessHelper(guessSetter, newGuessNum) {
         guessSetter(currentGuessWord)
-        checkLetters()
+        checkLetters() // adds correct and incorrect letter into state 
         if (currentGuessWord === secretWord.current) {
             alert("Congrats you guessed the correct word!")
         }
@@ -83,7 +83,6 @@ function Guesses() {
         if (currentGuessWord.length !== 5) {
             return
         }
-        
         if (!wordList.includes(currentGuessWord)) {
             return alert("That's not a real word")
         }
@@ -164,8 +163,8 @@ function Guesses() {
     // {letterBoxes}
 
     return (
-        <Box mt="12px"  height="90vh" >
-        <Box p="5px 8px 17px 5px" maxHeight="60vh">
+        <Box mt="12px" >
+        <Box p="5px 8px 17px 5px" maxHeight="60%">
             <Grid templateColumns="repeat(5, 1fr)" templateRows="repeat(5, 1fr)" gap={3} >
                
                 <GridItem backgroundColor={correctSpot(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
@@ -200,7 +199,7 @@ function Guesses() {
                 <GridItem backgroundColor={correctSpot(4,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[4] || displayIfThisGuess(6,4)}</Text></AspectRatio></GridItem>
             </Grid>
         </Box>
-        <Box maxHeight="30vh">
+        <Box maxHeight="30%">
             <Box align='center' className='keyBox' >
 
                 {topRowKeys.map(k => {
