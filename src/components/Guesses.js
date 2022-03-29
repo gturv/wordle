@@ -5,7 +5,6 @@ import '../App.css'
 
 function Guesses() {
     const randomInteger = Math.floor(Math.random() * 3234);
-    //const secretWord = "WARNS"
     const secretWord = useRef(wordList[randomInteger])  //"WARNS" //wordList[randomInteger]
     const [currentGuessWord, setCurrentGuessWord] = useState("")
     const [currentGuessNumber, setCurrentGuessNumber] = useState(1)
@@ -22,7 +21,7 @@ function Guesses() {
     const [win, setWin] = useState(false)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
-    // <GridItem style={correctSpott(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
+    // <GridItem style={correctSpot(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
     const letterBoxes = []
     for (let guessNum of guessNumArray) {
         for (let i=0; i < 5; i++) {
@@ -32,7 +31,7 @@ function Guesses() {
 
     //console.log("secretWord:", secretWord)
     //console.log("GUESSED LETTERS", correctLetterCorrectSpot, correctLetterWrongSpot, incorrectLetter)
-    console.log("secretWord.current", secretWord.current)
+    console.log("secretWord", secretWord.current)
 
     function checkLetters() { // adds guessed letters into state
         for (let i=0; i < 5; i++) {
@@ -67,14 +66,14 @@ function Guesses() {
         if (currentGuessWord.length < 5) {
             setCurrentGuessWord(current => current + e.target.title)
             console.log(currentGuessWord)
-
         }
     }
+
     function submitGuessHelper(guessSetter, newGuessNum) {
         guessSetter(currentGuessWord)
         checkLetters() // adds correct and incorrect letter into state 
         if (currentGuessWord === secretWord.current) {
-            setWin(true)
+            return setTimeout(() => {setWin(true)},1900)
         }
         setCurrentGuessWord("")
         setCurrentGuessNumber(newGuessNum)
@@ -109,7 +108,8 @@ function Guesses() {
                 if (currentGuessWord === secretWord.current) {
                     return setWin(true)
                 }
-                setLose(true)
+                setCurrentGuessNumber(7)
+                setTimeout(() => {setLose(true)},1900)
                 return 
             default:
                 break;
@@ -120,30 +120,8 @@ function Guesses() {
         console.log("backspace")
         setCurrentGuessWord(current => current.slice(0, -1))
     }
-    console.log("current word", currentGuessWord)
-    console.log("current guees number", currentGuessNumber)
-
 
     function correctSpot(idx, guessNumber, guessInt) { // put this for background color, return green
-        if(lose) {
-            return 'red'
-        }
-        if (currentGuessWord.length === 5 && !wordList.includes(currentGuessWord) && guessInt === currentGuessNumber) {
-            return "lightcoral"
-        }
-        if (secretWord.current[idx] === guessNumber[idx]) {
-            return "lightgreen"
-        }
-        if (secretWord.current.includes(guessNumber[idx])) {
-            return "khaki"
-        }
-        if (currentGuessNumber > guessInt) {
-            return 'lightgrey'
-        }
-        return "none"
-    }
-
-    function correctSpott(idx, guessNumber, guessInt) { // put this for background color, return green
         if(lose) {
             return {backgroundColor: 'red'}
         }
@@ -165,9 +143,6 @@ function Guesses() {
         }
         return 
     }
-
-    
-
     //control background color for keys if they've been guessed or correct
      function correctKey(k) {
         if (correctLetterCorrectSpot.includes(k)) {
@@ -186,39 +161,39 @@ function Guesses() {
 
     return (
         <Box mt="12px" >
-        <Box p="5px 8px 17px 5px" >
+        <Box p="5px 8px 10px 5px" >
             <Grid templateColumns="repeat(5, 1fr)" templateRows="repeat(5, 1fr)" gap={3} >
                
-                <GridItem style={correctSpott(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align="center" fontSize="4xl">{guessOne[1] || currentGuessWord[1]}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[2] || currentGuessWord[2]}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[3] || currentGuessWord[3]}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[4] || currentGuessWord[4]}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(0,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[0] || displayIfThisGuess(2,0)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[1] || displayIfThisGuess(2,1)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[2] || displayIfThisGuess(2,2)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[3] || displayIfThisGuess(2,3)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[4] || displayIfThisGuess(2,4)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(0,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[0] || displayIfThisGuess(3,0)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[1] || displayIfThisGuess(3,1)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[2] || displayIfThisGuess(3,2)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[3] || displayIfThisGuess(3,3)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[4] || displayIfThisGuess(3,4)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(0,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[0] || displayIfThisGuess(4,0)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[1] || displayIfThisGuess(4,1)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[2] || displayIfThisGuess(4,2)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[3] || displayIfThisGuess(4,3)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[4] || displayIfThisGuess(4,4)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(0,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[0] || displayIfThisGuess(5,0)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[1] || displayIfThisGuess(5,1)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[2] || displayIfThisGuess(5,2)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[3] || displayIfThisGuess(5,3)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[4] || displayIfThisGuess(5,4)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(0,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[0] || displayIfThisGuess(6,0)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(1,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[1] || displayIfThisGuess(6,1)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(2,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[2] || displayIfThisGuess(6,2)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(3,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[3] || displayIfThisGuess(6,3)}</Text></AspectRatio></GridItem>
-                <GridItem style={correctSpott(4,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[4] || displayIfThisGuess(6,4)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align="center" fontSize="4xl">{guessOne[1] || currentGuessWord[1]}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[2] || currentGuessWord[2]}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[3] || currentGuessWord[3]}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[4] || currentGuessWord[4]}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[0] || displayIfThisGuess(2,0)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[1] || displayIfThisGuess(2,1)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[2] || displayIfThisGuess(2,2)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[3] || displayIfThisGuess(2,3)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessTwo,2)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessTwo[4] || displayIfThisGuess(2,4)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[0] || displayIfThisGuess(3,0)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[1] || displayIfThisGuess(3,1)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[2] || displayIfThisGuess(3,2)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[3] || displayIfThisGuess(3,3)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessThree,3)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessThree[4] || displayIfThisGuess(3,4)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[0] || displayIfThisGuess(4,0)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[1] || displayIfThisGuess(4,1)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[2] || displayIfThisGuess(4,2)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[3] || displayIfThisGuess(4,3)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessFour,4)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFour[4] || displayIfThisGuess(4,4)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[0] || displayIfThisGuess(5,0)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[1] || displayIfThisGuess(5,1)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[2] || displayIfThisGuess(5,2)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[3] || displayIfThisGuess(5,3)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessFive,5)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessFive[4] || displayIfThisGuess(5,4)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(0,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[0] || displayIfThisGuess(6,0)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(1,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[1] || displayIfThisGuess(6,1)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(2,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[2] || displayIfThisGuess(6,2)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(3,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[3] || displayIfThisGuess(6,3)}</Text></AspectRatio></GridItem>
+                <GridItem style={correctSpot(4,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessSix[4] || displayIfThisGuess(6,4)}</Text></AspectRatio></GridItem>
             </Grid>
         </Box>
         <Box >
@@ -236,13 +211,14 @@ function Guesses() {
             </Box>
 
             <Box align='center' className='keyBoxBottom'>
-                <Box as="span" w="10%" margin="auto" pt="8px" minH="5vh" mr={1} onClick={submitGuess} bg="silver" >Ent</Box>
+                <Box as="span" className='specialKey'   onClick={submitGuess} >Ent</Box>
                     {bottomRowKeys.map(k => {
                     return <Box key={k} as="span" className='key' title={k} onClick={keyClick} style={correctKey(k)} >{k}</Box>
                     })}
-                <Box as="span" margin="auto" pt="8px" minH="5vh" w="11%" onClick={backspace} bg="silver" >Back</Box>   
+                <Box as="span" className='specialKey' onClick={backspace} >Back</Box>   
             </Box>
-                     {lose ?  `You suck! Correct word: ${secretWord.current}, refresh to play again` : ""}
+                     {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord.current}". Refresh to play again</Text> : ""}
+                     {win ? <Text align="center" fontWeight='bold'>You WIN! Refresh to play again</Text>: ""}
                     
         </Box>
         </Box>
