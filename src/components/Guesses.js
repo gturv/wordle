@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Text, Box, Grid, GridItem, AspectRatio } from "@chakra-ui/react"
+import { Text, Box, Grid, GridItem, AspectRatio, Button } from "@chakra-ui/react"
 import wordList from '../wordlist'
 import '../App.css'
 
@@ -20,6 +20,7 @@ function Guesses() {
     const [lose, setLose] = useState(false)
     const [win, setWin] = useState(false)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
+    //const greySquare = ⬜️
 
     // <GridItem style={correctSpot(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="16vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
     const letterBoxes = []
@@ -157,11 +158,20 @@ function Guesses() {
         return {backgroundColor: 'silver'}
     } 
 
+    function onShare() {
+        navigator.share({
+            text:  `XXCWX
+                    XXCCX
+                    CXCCX
+                    CCCCC`
+        })
+    }
+
     // {letterBoxes}
 
     return (
         <Box mt="12px" >
-        <Box p="5px 8px 10px 5px" >
+        <Box p="5px 8px 10px 5px"  >
             <Grid templateColumns="repeat(5, 1fr)" templateRows="repeat(5, 1fr)" gap={1} >
                
                 <GridItem style={correctSpot(0,guessOne,1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="16vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
@@ -196,7 +206,7 @@ function Guesses() {
                 <GridItem style={correctSpot(4,guessSix,6)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="16vw" ratio={1}><Text align='center' fontSize="5xl">{guessSix[4] || displayIfThisGuess(6,4)}</Text></AspectRatio></GridItem>
             </Grid>
         </Box>
-        <Box >
+        <Box  >
             <Box align='center' className='keyBox' >
 
                 {topRowKeys.map(k => {
@@ -219,6 +229,7 @@ function Guesses() {
             </Box>
                      {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord.current}". Refresh to play again</Text> : ""}
                      {win ? <Text align="center" fontWeight='bold'>You WIN! Refresh to play again</Text>: ""}
+                     {win ? <Button onClick={onShare} >Share</Button> : ""}
                     
         </Box>
         </Box>
