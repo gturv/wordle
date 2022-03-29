@@ -115,7 +115,7 @@ function Guesses() {
                 checkLetters()
                 setCurrentGuessWord("")
                 setLose(true)
-                alert("Wrong, you lose")
+                alert(`Wrong, you lose, correct word was ${secretWord.current}`)
                 return 
             default:
                 break;
@@ -132,6 +132,9 @@ function Guesses() {
     function correctSpot(idx, guessNumber, guessInt) { // put this for background color, return green
         if(lose) {
             return 'red'
+        }
+        if (currentGuessWord.length === 5 && !wordList.includes(currentGuessWord) && guessInt === currentGuessNumber) {
+            return "lightcoral"
         }
         if (secretWord.current[idx] === guessNumber[idx]) {
             return "lightgreen"
@@ -221,7 +224,7 @@ function Guesses() {
                     })}
                 <Box as="span" margin="auto" pt="8px" h="40px" w="101" mr={1} onClick={backspace} bg="silver" >Back</Box>   
             </Box>
-                    {lose ? `Correct word ${secretWord.current} refresh to play again`: ""}
+                    {lose ? `Correct word: ${secretWord.current}, refresh to play again`: ""}
         </Box>
         </Box>
     )
