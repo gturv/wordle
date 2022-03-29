@@ -10,11 +10,11 @@ import Guesses from './components/Guesses'
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Container height="100vh" >
-        <Header height="10vh" />
+      <Container height="90vh" >
+        <Header height="10%" />
         <hr style={{borderStyle: "solid", position:"absolute", borderColor:"black", borderWidth:"2px", width: "120vw", right:"1px", marginBottom: "8px"}}  />
 
-        <Guesses height="90vh" />
+        <Guesses height="80%" />
         
       </Container>
     </ChakraProvider>
