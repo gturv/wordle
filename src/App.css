@@ -8,3 +8,24 @@
   width: 12;
   height: 12;
 }
+
+.key {
+  margin: auto;
+  padding-top: 8px;
+  height: 7vh;
+  width: 8vw;
+  margin-right: 1px;
+}
+
+.keyBox {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 7px;
+  align-items: center;
+}
+.keyBoxBottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+  align-items: center;
+}
