@@ -10,7 +10,7 @@ import Guesses from './components/Guesses'
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Container paddingBottom="10px"  >
+      <Container >
         <Header />
         <hr style={{borderStyle: "solid", position:"absolute", borderColor:"black", borderWidth:"2px", width: "120vw", right:"1px", marginBottom: "8px"}}  />
 
