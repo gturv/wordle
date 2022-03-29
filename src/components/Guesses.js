@@ -171,15 +171,15 @@ function Guesses() {
     //control background color for keys if they've been guessed or correct
      function correctKey(k) {
         if (correctLetterCorrectSpot.includes(k)) {
-            return 'mediumseagreen'
+            return {backgroundColor: 'mediumseagreen', transitionDelay: "1500ms"}
         }
         if (correctLetterWrongSpot.includes(k)) {
-            return 'gold'
+            return {backgroundColor: 'gold', transitionDelay: "1500ms"}
         }
         if (incorrectLetter.includes(k)) {
-            return 'grey'
+            return {backgroundColor:'grey', transitionDelay: "1500ms"}
         }
-        return 'silver'
+        return {backgroundColor: 'silver'}
     } 
 
     // {letterBoxes}
@@ -225,25 +225,25 @@ function Guesses() {
             <Box align='center' className='keyBox' >
 
                 {topRowKeys.map(k => {
-                    return <Box key={k} as="span" className='key' title={k} onClick={keyClick} bg={correctKey(k)} >{k}</Box>
+                    return <Box key={k} as="span" className='key' title={k} onClick={keyClick} style={correctKey(k)} >{k}</Box>
                 })}
             </Box>
 
             <Box align='center' className='keyBox' >
                 {middleRowKeys.map(k => {
-                return <Box key={k} as="span" className='key' title={k} onClick={keyClick} bg={correctKey(k)} >{k}</Box>
+                return <Box key={k} as="span" className='key' title={k} onClick={keyClick} style={correctKey(k)} >{k}</Box>
                 })}
             </Box>
 
             <Box align='center' className='keyBoxBottom'>
                 <Box as="span" w="10%" margin="auto" pt="8px" minH="5vh" mr={1} onClick={submitGuess} bg="silver" >Ent</Box>
                     {bottomRowKeys.map(k => {
-                    return <Box key={k} as="span" className='key' title={k} onClick={keyClick} bg={correctKey(k)} >{k}</Box>
+                    return <Box key={k} as="span" className='key' title={k} onClick={keyClick} style={correctKey(k)} >{k}</Box>
                     })}
                 <Box as="span" margin="auto" pt="8px" minH="5vh" w="11%" onClick={backspace} bg="silver" >Back</Box>   
             </Box>
-                    {lose ? `You suck! Correct word: ${secretWord.current}, refresh to play again`: ""}
-                    {win ? "Congrats, you win, refresh to play again": ""}
+                     {lose ?  `You suck! Correct word: ${secretWord.current}, refresh to play again` : ""}
+                    
         </Box>
         </Box>
     )
