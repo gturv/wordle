@@ -20,7 +20,7 @@ function Guesses() {
     const [incorrectLetter, setIncorrectLetter] = useState([])
     const [lose, setLose] = useState(false)
     const [win, setWin] = useState(false)
-    const [board, setBoard] = useState("")
+    const [board, setBoard] = useState('\n')
     //console.log("GUESS NUM",currentGuessNumber)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
   /*   const greySquare = 'U+2B1C'
@@ -82,14 +82,12 @@ function Guesses() {
         return ""
     }
 
-    //const guessNumArray = []
     const topRowKeys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']
     const middleRowKeys= ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']
     const bottomRowKeys = [ 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ]
     const keyClick = e => {
         if (currentGuessWord.length < 5) {
             setCurrentGuessWord(current => current + e.target.title)
-            console.log(currentGuessWord)
         }
     }
 
@@ -133,9 +131,7 @@ function Guesses() {
                 setGuessSix(currentGuessWord)
                 buildBoard()
                 checkLetters()
-                setBoard(curr => `Turvle ${currentGuessNumber}/6
-                .
-                ` + curr)
+                setBoard(curr => `Turvle ${currentGuessNumber}/6` + curr)
                 if (currentGuessWord === secretWord.current) {
                     return setTimeout(() => {setWin(true)},1900)
                 }
