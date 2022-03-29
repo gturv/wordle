@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { Text, Box, Grid, GridItem, AspectRatio, Button } from "@chakra-ui/react"
+import {MdIosShare} from "react-icons/md";
 import wordList from '../wordlist'
 import '../App.css'
 
@@ -19,8 +20,16 @@ function Guesses() {
     const [incorrectLetter, setIncorrectLetter] = useState([])
     const [lose, setLose] = useState(false)
     const [win, setWin] = useState(false)
+    const [board, setBoard] = useState("")
+    //console.log("GUESS NUM",currentGuessNumber)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
-    //const greySquare = ⬜️
+  /*   const greySquare = 'U+2B1C'
+    const redSquaree = "U+1F7E5"
+    const yellowSquare = "U+1F7E8"
+    const greenSquare = "U+1F7E9"
+    const white = ''
+    console.log(greySquare) */
+    
 
     // <GridItem style={correctSpot(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="16vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
     const letterBoxes = []
@@ -35,7 +44,8 @@ function Guesses() {
     console.log("secretWord", secretWord.current)
 
     function checkLetters() { // adds guessed letters into state
-        for (let i=0; i < 5; i++) {
+
+        for (let i=0; i < 5; i++) { 
             if (currentGuessWord[i] === secretWord.current[i] && !correctLetterCorrectSpot.includes(currentGuessWord[i])) {
                 setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
                 setCorrectLetterWrongSpot(curr => curr.filter(f => f !== currentGuessWord[i] ))
@@ -50,6 +60,19 @@ function Guesses() {
             }
         }
     }
+    function buildBoard() {
+        for (let i=0; i<5; i++) {
+            if (currentGuessWord[i] === secretWord.current[i]) {
+                setBoard(curr => curr + '🟩')
+            } else if (secretWord.current.includes(currentGuessWord[i])) {
+                setBoard(curr => curr + '🟨')
+            } else {
+                setBoard(curr => curr + '⬜️')
+            }
+        }
+        setBoard(curr => curr + '\n')
+    }
+    console.log(board)
 
 
     function displayIfThisGuess(guessNumber, idx) {
@@ -72,8 +95,11 @@ function Guesses() {
 
     function submitGuessHelper(guessSetter, newGuessNum) {
         guessSetter(currentGuessWord)
+        buildBoard()
         checkLetters() // adds correct and incorrect letter into state 
         if (currentGuessWord === secretWord.current) {
+            setBoard(curr => `Turvle ${currentGuessNumber}/6
+            ` + curr)
             return setTimeout(() => {setWin(true)},1900)
         }
         setCurrentGuessWord("")
@@ -105,9 +131,13 @@ function Guesses() {
                 return 
             case 6:
                 setGuessSix(currentGuessWord)
+                buildBoard()
                 checkLetters()
+                setBoard(curr => `Turvle ${currentGuessNumber}/6
+                .
+                ` + curr)
                 if (currentGuessWord === secretWord.current) {
-                    return setWin(true)
+                    return setTimeout(() => {setWin(true)},1900)
                 }
                 setCurrentGuessNumber(7)
                 setTimeout(() => {setLose(true)},1900)
@@ -160,10 +190,7 @@ function Guesses() {
 
     function onShare() {
         navigator.share({
-            text:  `XXCWX
-                    XXCCX
-                    CXCCX
-                    CCCCC`
+            text: board
         })
     }
 
@@ -228,8 +255,8 @@ function Guesses() {
                 <Box as="span" className='specialKey' onClick={backspace} >Back</Box>   
             </Box>
                      {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord.current}". Refresh to play again</Text> : ""}
-                     {win ? <Text align="center" fontWeight='bold'>You WIN! Refresh to play again</Text>: ""}
-                     {win ? <Button onClick={onShare} >Share</Button> : ""}
+                     {win ? <Text align="center" fontWeight='bold'>You WIN! Refresh to play again </Text>: ""}
+                     {win ? <Button colorScheme='green' variant='outline' onClick={onShare} >Share</Button> : ""}
                     
         </Box>
         </Box>
