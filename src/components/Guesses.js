@@ -69,50 +69,46 @@ function Guesses() {
 
         }
     }
+    function submitGuessHelper(guessSetter, newGuessNum) {
+        guessSetter(currentGuessWord)
+        checkLetters()
+        if (currentGuessWord === secretWord.current) {
+            alert("Congrats you guessed the correct word!")
+        }
+        setCurrentGuessWord("")
+        setCurrentGuessNumber(newGuessNum)
+    }
+
     const submitGuess = () => {
         if (currentGuessWord.length !== 5) {
             return
         }
-        if (currentGuessWord === secretWord.current) {
-            alert("Congrats you guessed the correct word!")
-        }
+        
         if (!wordList.includes(currentGuessWord)) {
             return alert("That's not a real word")
         }
         switch (currentGuessNumber) {
             case 1:
-                setGuessOne(currentGuessWord)
-                checkLetters()
-                setCurrentGuessWord("")
-                setCurrentGuessNumber(2)
+                submitGuessHelper(setGuessOne, 2)
                 return
             case 2:
-                setGuessTwo(currentGuessWord)
-                checkLetters()
-                setCurrentGuessWord("")
-                setCurrentGuessNumber(3)   
+                submitGuessHelper(setGuessTwo, 3)   
                 return 
             case 3:
-                setGuessThree(currentGuessWord)
-                checkLetters()
-                setCurrentGuessWord("")
-                setCurrentGuessNumber(4)   
+                submitGuessHelper(setGuessThree, 4)  
                 return 
             case 4:
-                setGuessFour(currentGuessWord)
-                checkLetters()
-                setCurrentGuessWord("")
-                setCurrentGuessNumber(5)   
+                submitGuessHelper(setGuessFour, 5)
                 return 
             case 5:
-                setGuessFive(currentGuessWord)
-                checkLetters()
-                setCurrentGuessWord("")
-                setCurrentGuessNumber(6)   
+                submitGuessHelper(setGuessFive, 6)  
                 return 
             case 6:
                 setGuessSix(currentGuessWord)
                 checkLetters()
+                if (currentGuessWord === secretWord.current) {
+                    alert("Congrats you guessed the correct word!")
+                }
                 setCurrentGuessWord("")
                 setLose(true)
                 alert(`Wrong, you lose, correct word was ${secretWord.current}`)
