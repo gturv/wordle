@@ -136,10 +136,10 @@ function Guesses() {
             return "lightgreen"
         }
         if (secretWord.current.includes(guessNumber[idx])) {
-            return "yellow"
+            return "khaki"
         }
         if (currentGuessNumber > guessInt) {
-            return 'silver'
+            return 'lightgrey'
         }
         return "none"
     }
@@ -149,10 +149,10 @@ function Guesses() {
     //control background color for keys if they've been guessed or correct
      function correctKey(k) {
         if (correctLetterCorrectSpot.includes(k)) {
-            return 'green'
+            return 'mediumseagreen'
         }
         if (correctLetterWrongSpot.includes(k)) {
-            return 'yellow'
+            return 'gold'
         }
         if (incorrectLetter.includes(k)) {
             return 'grey'
@@ -214,11 +214,11 @@ function Guesses() {
             </Box>
 
             <Box align='center' className='keyBoxBottom'>
-                <Box as="span" w="10%" margin="auto" pt="8px" h="7vh" mr={1} onClick={submitGuess} bg="silver" >Ent</Box>
+                <Box as="span" w="10%" margin="auto" pt="8px" minH="5vh" mr={1} onClick={submitGuess} bg="silver" >Ent</Box>
                     {bottomRowKeys.map(k => {
                     return <Box key={k} as="span" className='key' title={k} onClick={keyClick} bg={correctKey(k)} >{k}</Box>
                     })}
-                <Box as="span" margin="auto" pt="8px" h="7vh" w="11%" onClick={backspace} bg="silver" >Back</Box>   
+                <Box as="span" margin="auto" pt="8px" minH="5vh" w="11%" onClick={backspace} bg="silver" >Back</Box>   
             </Box>
                     {lose ? `Correct word: ${secretWord.current}, refresh to play again`: ""}
         </Box>
