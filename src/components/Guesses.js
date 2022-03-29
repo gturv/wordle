@@ -19,6 +19,7 @@ function Guesses() {
     const [correctLetterWrongSpot, setCorrectLetterWrongSpot] = useState([])
     const [incorrectLetter, setIncorrectLetter] = useState([])
     const [lose, setLose] = useState(false)
+    const [win, setWin] = useState(false)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
     // <GridItem style={correctSpott(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="14vw" ratio={1}><Text align='center' fontSize="4xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
@@ -73,7 +74,7 @@ function Guesses() {
         guessSetter(currentGuessWord)
         checkLetters() // adds correct and incorrect letter into state 
         if (currentGuessWord === secretWord.current) {
-            alert("Congrats you guessed the correct word!")
+            setWin(true)
         }
         setCurrentGuessWord("")
         setCurrentGuessNumber(newGuessNum)
@@ -106,10 +107,9 @@ function Guesses() {
                 setGuessSix(currentGuessWord)
                 checkLetters()
                 if (currentGuessWord === secretWord.current) {
-                    return alert("Congrats you guessed the correct word!")
+                    return setWin(true)
                 }
                 setLose(true)
-                alert(`Wrong, you lose, correct word was ${secretWord.current}`)
                 return 
             default:
                 break;
@@ -152,13 +152,13 @@ function Guesses() {
             return { backgroundColor: "lightcoral"}
         }
         if (secretWord.current[idx] === guessNumber[idx]) {
-            return {backgroundColor: "lightgreen", transitionDelayMs: 200}
+            return {backgroundColor: "lightgreen", transitionDelay: `${300*idx + 200}ms`}
         }
         if (secretWord.current.includes(guessNumber[idx])) {
-            return {backgroundColor: "khaki", transitionDelayMs: 200}
+            return {backgroundColor: "khaki", transitionDelay: `${300*idx + 200}ms`}
         }
         if (currentGuessNumber > guessInt) {
-            return {backgroundColor: 'lightgrey', transitionDelayMs: 200}
+            return {backgroundColor: 'lightgrey', transitionDelay: `${300*idx + 200}ms`}
         }
         if (currentGuessWord.length < 5) {
             return {backgroundColor: "white" }
@@ -242,7 +242,8 @@ function Guesses() {
                     })}
                 <Box as="span" margin="auto" pt="8px" minH="5vh" w="11%" onClick={backspace} bg="silver" >Back</Box>   
             </Box>
-                    {lose ? `Correct word: ${secretWord.current}, refresh to play again`: ""}
+                    {lose ? `You suck! Correct word: ${secretWord.current}, refresh to play again`: ""}
+                    {win ? "Congrats, you win, refresh to play again": ""}
         </Box>
         </Box>
     )
