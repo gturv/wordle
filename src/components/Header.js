@@ -18,9 +18,3 @@ function Header({ setUnlimited, unlimited }) {
 
 export default Header
 
-{/* <RadioGroup position='absolute' top={0} left={5} onChange={setValue} value={value}>
-<Stack  direction='column'>
-    <Radio value={1}>Daily</Radio>
-    <Radio value={2}>Unlimited</Radio>
-</Stack>
-</RadioGroup> */}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Text, Box, Grid, GridItem, AspectRatio, Button } from "@chakra-ui/react"
-import {MdIosShare} from "react-icons/md";
+//import {MdIosShare} from "react-icons/md";
 import wordList from '../wordlist'
 import '../App.css'
 
@@ -15,6 +15,7 @@ function Guesses({ unlimited }) {
     const secretWordUnlimited = useRef(wordList[randomInteger])  //"WARNS" //wordList[randomInteger]
     console.log('secretUnlimited', secretWordUnlimited)
     const secretWordSingle = wordList[day]
+    //console.log("day",day)
     console.log("secretSingle", secretWordSingle)
     const secretWord = unlimited ? secretWordUnlimited.current : secretWordSingle
     const [currentGuessWord, setCurrentGuessWord] = useState("")
@@ -119,7 +120,7 @@ function Guesses({ unlimited }) {
         buildBoard()
         checkLetters() // adds correct and incorrect letter into state 
         if (currentGuessWord === secretWord) {
-            setBoard(curr => `Turvle ${currentGuessNumber}/6` + curr)
+            setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
             return setTimeout(() => {setWin(true)},1900)
         }
         setCurrentGuessWord("")
@@ -153,7 +154,7 @@ function Guesses({ unlimited }) {
                 setGuessSix(currentGuessWord)
                 buildBoard()
                 checkLetters()
-                setBoard(curr => `Turvle ${currentGuessNumber}/6` + curr)
+                setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
                 if (currentGuessWord === secretWord) {
                     return setTimeout(() => {setWin(true)},1900)
                 }
