@@ -1,5 +1,5 @@
 import { Text, Box, Switch, FormControl, FormLabel } from "@chakra-ui/react"
-import { useState } from 'react'
+//import { useState } from 'react'
 
 function Header({ setUnlimited, unlimited }) {
     console.log(unlimited)
@@ -7,7 +7,7 @@ function Header({ setUnlimited, unlimited }) {
         <Box align="center" width="100%" maxHeight="10vh" >
             <Text fontWeight="bold" fontSize="4xl">Turvle</Text>
             <FormControl position='absolute' top={5} left={4} display='flex' alignItems='center'>
-            <FormLabel htmlFor='unlimited' mb='0'>
+            <FormLabel htmlFor='unlimited' mr='2px' mb='0'>
                 Unlimited
             </FormLabel>
             <Switch id='unlimited' value={unlimited} onChange={()=>setUnlimited(!unlimited)} />
