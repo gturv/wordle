@@ -9,10 +9,13 @@ import Guesses from './components/Guesses'
 
 function App() {
   const [unlimited, setUnlimited] = useState(false)
+  function handleToggleUnlimited(v) {
+    setUnlimited(v)
+  }
   return (
     <ChakraProvider theme={theme}>
       <Container  >
-        <Header setUnlimited={setUnlimited} unlimited={unlimited} />
+        <Header setUnlimited={setUnlimited} handleToggleUnlimited={handleToggleUnlimited} unlimited={unlimited} />
         <hr style={{borderStyle: "solid", position:"absolute", borderColor:"black", borderWidth:"2px", width: "120vw", right:"1px", marginBottom: "8px"}}  />
 
         <Guesses unlimited={unlimited} />

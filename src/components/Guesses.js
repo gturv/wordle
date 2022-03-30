@@ -272,7 +272,7 @@ function Guesses({ unlimited }) {
                 <Box as="span" className='specialKey' onClick={backspace} >Back</Box>   
             </Box>
                      {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
-                     {win && unlimited ? <Text align="center" fontWeight='bold'>You WIN! <span onClick={()=> window.location.reload()} fontWeight="bold">Refresh</span> to play again </Text>: ""}
+                     {win && unlimited ? <Text align="center" fontWeight='bold'>You WIN! <span onClick={()=> window.location.reload()} style={{textDecoration:"underline"}}>Refresh</span> to play again </Text>: ""}
                      {win && !unlimited ? <Text align="center" fontWeight='bold'>You WIN! Switch to unlimited to play again </Text>: ""}
 
                      {win && !unlimited ? <Button colorScheme='green' constiant='outline' onClick={onShare} >Share</Button> : ""}
