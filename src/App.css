@@ -11,7 +11,7 @@
 
 .key {
   padding-top: 8px;
-  min-height: 5vh;
+  min-height: 6vh;
   width: 9%;
   margin-left: 2px;
   margin-right: 2px;
@@ -19,7 +19,7 @@
 
 .specialKey {
   padding-top: 8px;
-  min-height: 5vh;
+  min-height: 6vh;
   width: 14%;
   margin-left: 1px;
   margin-right: 1px;
