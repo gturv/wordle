@@ -1,8 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
-import { Text, Box, Grid, GridItem, AspectRatio, Button } from "@chakra-ui/react"
+import { Text, Box, Grid, GridItem, AspectRatio, Button, Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton, useDisclosure } from "@chakra-ui/react"
 //import {MdIosShare} from "react-icons/md";
 import wordList from '../wordlist'
 import '../App.css'
+import Cookies from 'js-cookie'
 
 function Guesses({ unlimited }) {
     const now = new Date();
@@ -10,6 +17,9 @@ function Guesses({ unlimited }) {
     const diff = now - start;
     const oneDay = 1000 * 60 * 60 * 24;
     const day = Math.floor(diff / oneDay);
+
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
 
     const randomInteger = Math.floor(Math.random() * 3234);
     const secretWordUnlimited = useRef(wordList[randomInteger])  //"WARNS" //wordList[randomInteger]
@@ -32,8 +42,31 @@ function Guesses({ unlimited }) {
     const [lose, setLose] = useState(false)
     const [win, setWin] = useState(false)
     const [board, setBoard] = useState('\n')
+    const [played, setPlayed] = useState(false)
     //console.log("GUESS NUM",currentGuessNumber)
     const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
+
+    //const numTimesPlays = Cookies.get("numTimesPlayed")
+    const cookieExists = Cookies.get("numTimesLost")
+    if (!cookieExists) {
+        Cookies.set("numTimesPlayed","0", { expires: 7 })
+        Cookies.set("numTimesWon", "0", { expires: 7 })
+        Cookies.set("numTimesLost", "0", { expires: 7})
+        Cookies.set("winPercent","0", { expires: 7 })
+        Cookies.set("currentStreak","0", { expires: 7 })
+        Cookies.set("maxStreak","0", { expires: 7 })
+        Cookies.set("guessedOne","0", { expires: 7 })
+        Cookies.set("guessedTwo","0", { expires: 7 })
+        Cookies.set("guessedThree","0", { expires: 7 })
+        Cookies.set("guessedFour","0", { expires: 7 })
+        Cookies.set("guessedFive","0", { expires: 7 })
+        Cookies.set("guessedSix","0", { expires: 7 })
+        Cookies.set("lastPlayed","0", { expires: 7 })
+    }
+
+    console.log("full cookie", Cookies.get())
+    //console.log("win Percent", cookieExists.winPercent)
+
 
     useEffect(() => {
         setCurrentGuessWord("")
@@ -49,11 +82,37 @@ function Guesses({ unlimited }) {
         setIncorrectLetter([])
         setLose(false)
         setWin(false)
-        setBoard("\n")
-        
+        setBoard("\n")    
     }, [unlimited])
 
     console.log("unlimited Guesses.js", unlimited)
+    useEffect(()=> {
+        if (Cookies.get("lastPlayed") === `${day - 88}`) {
+            setPlayed(true)
+        } else {
+            setPlayed(false)
+        } 
+    },[])
+
+    useEffect(()=> {
+
+        if(win || lose) {
+           onOpen()
+        }
+    },[win, lose])
+
+    useEffect(()=> {
+        if (played && !unlimited) {
+            setCurrentGuessWord("")
+            setCurrentGuessNumber(1)
+            setGuessOne("YOU")
+            setGuessTwo("HAVE")
+            setGuessThree("ALREA")
+            setGuessFour("DY")
+            setGuessFive("PLAYD")
+            setGuessSix("TODAY")
+        }
+    })  
 
     // <GridItem style={correctSpot(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="15vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
     const letterBoxes = []
@@ -96,8 +155,6 @@ function Guesses({ unlimited }) {
         }
         setBoard(curr => curr + '\n')
     }
-    console.log(board)
-
 
     function displayIfThisGuess(guessNumber, idx) {
         if (guessNumber === currentGuessNumber) {
@@ -109,9 +166,55 @@ function Guesses({ unlimited }) {
     const topRowKeys = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']
     const middleRowKeys= ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']
     const bottomRowKeys = [ 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ]
+    
     const keyClick = e => {
+/*         if(!unlimited && played) {
+            return
+        } */
         if (currentGuessWord.length < 5) {
             setCurrentGuessWord(current => current + e.target.title)
+        }
+    }
+
+    function incrementCookie(cookieName) {
+        const stringNum = Cookies.get(cookieName)
+        const incremented = (parseInt(stringNum) + 1 ).toString()
+        return Cookies.set(cookieName, incremented, { expires: 7})
+    }
+    function incrementGuessNumCookie(numGuesses) {   
+        switch (numGuesses) {
+            case 1:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedOne")
+            case 2:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedTwo")
+            case 3:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedThree")
+            case 4:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedFour")
+            case 5:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedFive")
+            case 6:
+                incrementCookie("numTimesWon")
+                incrementCookie("numTimesPlayed")
+                incrementCookie("currentStreak")
+                return incrementCookie("guessedSix")
+            default:
+                break;
         }
     }
 
@@ -119,7 +222,13 @@ function Guesses({ unlimited }) {
         guessSetter(currentGuessWord)
         buildBoard()
         checkLetters() // adds correct and incorrect letter into state 
-        if (currentGuessWord === secretWord) {
+        if ((currentGuessWord === secretWord) && !unlimited) {
+            setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
+            incrementGuessNumCookie(newGuessNum-1)
+            Cookies.set("lastPlayed", `${day - 88}`)
+            return setTimeout(() => {setWin(true)},1900)
+        }
+        if ((currentGuessWord === secretWord) && unlimited) {
             setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
             return setTimeout(() => {setWin(true)},1900)
         }
@@ -155,10 +264,21 @@ function Guesses({ unlimited }) {
                 buildBoard()
                 checkLetters()
                 setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
-                if (currentGuessWord === secretWord) {
+                if ((currentGuessWord === secretWord) && !unlimited) {
+                    incrementGuessNumCookie(6)
+                    Cookies.set("lastPlayed", `${day - 88}`)
+                    return setTimeout(() => {setWin(true)},1900)
+                }
+                if ((currentGuessWord === secretWord) && unlimited) {
                     return setTimeout(() => {setWin(true)},1900)
                 }
                 setCurrentGuessNumber(7)
+                if (!unlimited){
+                    incrementCookie("numTimesLost")
+                    incrementCookie("numTimesPlayed")
+                    Cookies.set("currentStreak", "0", { expires: 7})
+                    Cookies.set("lastPlayed", (day-88).toString())
+                }
                 setTimeout(() => {setLose(true)},1900)
                 return 
             default:
@@ -171,29 +291,37 @@ function Guesses({ unlimited }) {
     }
 
     function correctSpot(idx, guessNumber, guessInt) { // put this for background color, return green
+        if (played && !unlimited) {
+            return { backgroundColor: 'lightgrey' }
+        }
         if(lose) {
             return {backgroundColor: 'red'}
         }
-
         if (currentGuessWord.length === 5 && !wordList.includes(currentGuessWord) && guessInt === currentGuessNumber) {
-            return { backgroundColor: "lightcoral"} // should make the red fade in and out
+            return { backgroundColor: "lightcoral", borderColor: "black",  animation: "shake .5s ease-in-out"} // should make the red fade in and out
         }
         if (secretWord[idx] === guessNumber[idx]) {
-            return {backgroundColor: "lightgreen", transitionDelay: `${300*idx + 200}ms`}
+            return {backgroundColor: "lightgreen", borderColor: "black", transitionDelay: `${300*idx + 200}ms`}
         }
         if (secretWord.includes(guessNumber[idx])) {
-            return {backgroundColor: "khaki", transitionDelay: `${300*idx + 200}ms`}
+            return {backgroundColor: "khaki", borderColor: "black", transitionDelay: `${300*idx + 200}ms`}
         }
         if (currentGuessNumber > guessInt) {
-            return {backgroundColor: 'lightgrey', transitionDelay: `${300*idx + 200}ms`}
+            return {backgroundColor: 'lightgrey', borderColor: "black", transitionDelay: `${300*idx + 200}ms`}
+        }
+        if (currentGuessNumber === guessInt && currentGuessWord.length >= idx + 1) {
+            return { borderColor: "black", backgroundColor: "#E8E8E8", transition: "border-color 0.25s linear" }
         }
         if (currentGuessWord.length < 5) {
-            return {backgroundColor: "white" }
+            return {backgroundColor: "white", transition: "background-color 0.5s linear" }
         }
         return 
     }
     //control background color for keys if they've been guessed or correct
      function correctKey(k) {
+        if (played && !unlimited) {
+            return { backgroundColor: 'white', borderColor: "black", borderStyle:"solid", borderWidth: "1px" }
+        }
         if (correctLetterCorrectSpot.includes(k)) {
             return {backgroundColor: 'mediumseagreen', transitionDelay: "1500ms"}
         }
@@ -212,7 +340,44 @@ function Guesses({ unlimited }) {
         })
     }
 
+
+    const numTimesPlayed = parseInt(Cookies.get("numTimesPlayed"))
+    const numWins = parseInt(Cookies.get("numTimesWon"))
+
+    function createModal() {
+        return <><Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize="5xl" align="center">You {win ? "Win" : "Lose"}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
+            <Text>Played: {numTimesPlayed}</Text>
+            <Text> Win %: {numWins/numTimesPlayed * 100}%</Text>
+            <Text> Current Streak: {Cookies.get("currentStreak")}</Text>
+            <Text align="center" fontSize="2xl" >Guess Distribution</Text>
+            <Text>1: {Cookies.get("guessedOne")}</Text>
+            <Text>2: {Cookies.get("guessedTwo")}</Text>
+            <Text>3: {Cookies.get("guessedThree")}</Text>
+            <Text>4: {Cookies.get("guessedFour")}</Text>
+            <Text>5: {Cookies.get("guessedFive")}</Text>
+            <Text>6: {Cookies.get("guessedSix")}</Text>
+            <Text>Lost: {Cookies.get("numTimesLost")}</Text>
+          </ModalBody>
+
+          <ModalFooter>
+          <Button colorScheme='green' constiant='outline' onClick={onShare} >Share</Button>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal></>
+    }
+
+
     // {letterBoxes}
+
 
     return (
         <Box mt="12px">
@@ -252,7 +417,7 @@ function Guesses({ unlimited }) {
             </Grid>
         </Box>
         <Box  >
-            <Box align='center' className='keyBox' >
+            <Box align='center' className='keyBox'  >
 
                 {topRowKeys.map(k => {
                     return <Box key={k} as="span" className='key' title={k} onClick={keyClick} style={correctKey(k)} >{k}</Box>
@@ -272,11 +437,13 @@ function Guesses({ unlimited }) {
                     })}
                 <Box as="span" className='specialKey' onClick={backspace} >Back</Box>   
             </Box>
-                     {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
+                     {lose && unlimited ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
                      {win && unlimited ? <Text align="center" fontWeight='bold'>You WIN! <span onClick={()=> window.location.reload()} style={{textDecoration:"underline"}}>Refresh</span> to play again </Text>: ""}
                      {win && !unlimited ? <Text align="center" fontWeight='bold'>You WIN! Switch to unlimited to play again </Text>: ""}
-
-                     {win && !unlimited ? <Button colorScheme='green' constiant='outline' onClick={onShare} >Share</Button> : ""}
+{/*                      {lose && !unlimited ? createModal() : ""}
+                     {win && !unlimited ? createModal()
+                      : ""} */}
+                      {createModal()}
                     
         </Box>
         </Box>
