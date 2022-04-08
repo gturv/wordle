@@ -2,7 +2,6 @@ import { Text, Box, Switch, FormControl, FormLabel } from "@chakra-ui/react"
 //import { useState } from 'react'
 
 function Header({ setUnlimited, unlimited }) {
-    console.log(unlimited)
     return (
         <Box align="center" width="100%" maxHeight="10vh" >
             <Text fontWeight="bold" fontSize="4xl">Turvle</Text>

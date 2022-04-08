@@ -23,10 +23,7 @@ function Guesses({ unlimited }) {
 
     const randomInteger = Math.floor(Math.random() * 3234);
     const secretWordUnlimited = useRef(wordList[randomInteger])  //"WARNS" //wordList[randomInteger]
-    console.log('secretUnlimited', secretWordUnlimited)
     const secretWordSingle = wordList[day]
-    //console.log("day",day)
-    console.log("secretSingle", secretWordSingle)
     const secretWord = unlimited ? secretWordUnlimited.current : secretWordSingle
     const [currentGuessWord, setCurrentGuessWord] = useState("")
     const [currentGuessNumber, setCurrentGuessNumber] = useState(1)
@@ -64,10 +61,7 @@ function Guesses({ unlimited }) {
         Cookies.set("lastPlayed","0", { expires: 7 })
     }
 
-    console.log("full cookie", Cookies.get())
-    //console.log("win Percent", cookieExists.winPercent)
-
-
+    //console.log("full cookie", Cookies.get())
     useEffect(() => {
         setCurrentGuessWord("")
         setCurrentGuessNumber(1)
@@ -85,7 +79,6 @@ function Guesses({ unlimited }) {
         setBoard("\n")    
     }, [unlimited])
 
-    console.log("unlimited Guesses.js", unlimited)
     useEffect(()=> {
         if (Cookies.get("lastPlayed") === `${day - 88}`) {
             setPlayed(true)
@@ -95,7 +88,6 @@ function Guesses({ unlimited }) {
     },[])
 
     useEffect(()=> {
-
         if(win && !unlimited || lose && !unlimited) {
            onOpen()
         }
@@ -115,19 +107,15 @@ function Guesses({ unlimited }) {
     })  
 
     // <GridItem style={correctSpot(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="15vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
-    const letterBoxes = []
+/*     const letterBoxes = []
     for (let guessNum of guessNumArray) {
         for (let i=0; i < 5; i++) {
             letterBoxes.push(<GridItem key={`${guessNum}${i}`} backgroundColor={correctSpot(i,guessNum,i+1)} className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="15vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[i] || currentGuessWord[i]}</Text></AspectRatio></GridItem>)
         }
-    }
-
-    //console.log("secretWord:", secretWord)
-    //console.log("GUESSED LETTERS", correctLetterCorrectSpot, correctLetterWrongSpot, incorrectLetter)
+    } */
     console.log("secretWord", secretWord)
 
     function checkLetters() { // adds guessed letters into state
-
         for (let i=0; i < 5; i++) { 
             if (currentGuessWord[i] === secretWord[i] && !correctLetterCorrectSpot.includes(currentGuessWord[i])) {
                 setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
@@ -168,9 +156,9 @@ function Guesses({ unlimited }) {
     const bottomRowKeys = [ 'Z', 'X', 'C', 'V', 'B', 'N', 'M' ]
     
     const keyClick = e => {
-/*         if(!unlimited && played) {
+        if(!unlimited && played) {
             return
-        } */
+        } 
         if (currentGuessWord.length < 5) {
             setCurrentGuessWord(current => current + e.target.title)
         }
