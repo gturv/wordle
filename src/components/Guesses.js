@@ -108,8 +108,8 @@ function Guesses({ unlimited }) {
             setGuessOne("YOU")
             setGuessTwo("HAVE")
             setGuessThree("ALREA")
-            setGuessFour("DY")
-            setGuessFive("PLAYD")
+            setGuessFour("DY PL")
+            setGuessFive("AYED")
             setGuessSix("TODAY")
         }
     })  
