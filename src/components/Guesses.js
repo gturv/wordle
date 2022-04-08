@@ -96,7 +96,7 @@ function Guesses({ unlimited }) {
 
     useEffect(()=> {
 
-        if(win || lose) {
+        if(win && !unlimited || lose && !unlimited) {
            onOpen()
         }
     },[win, lose])
