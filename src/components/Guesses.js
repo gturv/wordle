@@ -293,7 +293,7 @@ function Guesses({ unlimited, setUnlimited }) {
             return {backgroundColor: 'red'}
         }
         if (currentGuessWord.length === 5 && !wordList.includes(currentGuessWord) && guessInt === currentGuessNumber) {
-            return { backgroundColor: "lightcoral", borderColor: "black",  animation: "shake .5s ease-in-out"} // should make the red fade in and out
+            return { backgroundColor: "lightcoral", borderColor: "black",  animation: "shake .4s ease-in-out"} // should make the red fade in and out
         }
         if (secretWord[idx] === guessNumber[idx]) {
             return {backgroundColor: "lightgreen", borderColor: "black", transitionDelay: `${300*idx + 200}ms`}
@@ -391,7 +391,7 @@ function Guesses({ unlimited, setUnlimited }) {
           {unlimited && lose ? <><ModalHeader fontSize="5xl" align="center">You SUCK! </ModalHeader><ModalCloseButton />
           <ModalBody>The correct word was "{secretWord}"</ModalBody>
           <ModalFooter>
-              <Button colorScheme="blue" onClick={newUnlimitedWord} >Play Again</Button>
+              <Button colorScheme="blue" onClick={closeAndNewWord} >Play Again</Button>
           </ModalFooter></> : ""}
         </ModalContent>
       </Modal></>
