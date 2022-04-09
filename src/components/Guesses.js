@@ -92,8 +92,10 @@ function Guesses({ unlimited, setUnlimited }) {
     },[played, day])
 
     useEffect(()=> {
-        if((win && !unlimited) || (lose && !unlimited)) {
-           onOpen()
+        if (win || lose) {
+            onOpen()
+        }
+        if(!unlimited) {
            setPlayed(true)
         }
     },[win, lose, unlimited, onOpen])
@@ -332,19 +334,12 @@ function Guesses({ unlimited, setUnlimited }) {
             text: board
         })
     }
-
-
     const numTimesPlayed = parseInt(Cookies.get("numTimesPlayed"))
     const numWins = parseInt(Cookies.get("numTimesWon"))
 
-    function createModal() {
-        return <><Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader fontSize="5xl" align="center">You {win ? "Win" : "Lose"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-          {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
+    function modalDailyBody() {
+        return (
+            <>
             <Text>Played: {numTimesPlayed}</Text>
             <Text> Win %: {numWins/numTimesPlayed * 100}%</Text>
             <Text> Current Streak: {Cookies.get("currentStreak")}</Text>
@@ -356,18 +351,53 @@ function Guesses({ unlimited, setUnlimited }) {
             <Text>5: {Cookies.get("guessedFive")}</Text>
             <Text>6: {Cookies.get("guessedSix")}</Text>
             <Text>Lost: {Cookies.get("numTimesLost")}</Text>
+            </>
+        )
+    }
+   // {lose ?  <Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}". Refresh to play again</Text> : ""}
+    //
+    // Revert to here
+    //this doesn work
+    function closeAndNewWord(){
+        onClose()
+        newUnlimitedWord()
+    }
+    function createModal() {
+        return <><Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+            {!unlimited && win ?  
+            <><ModalHeader fontSize="5xl" align="center">You Win!</ModalHeader><ModalCloseButton />
+            <ModalBody>
+                {modalDailyBody()}
+            </ModalBody>
+            <ModalFooter>
+                <Button colorScheme='green' constiant='outline' onClick={onShare}>Share</Button>
+                <Button colorScheme='blue' mr={3} onClick={onClose}>Close</Button>
+            </ModalFooter></>
+          :""}
+          {!unlimited && lose ? <><ModalHeader fontSize="5xl" align="center">You SUCK! The correct word was "{secretWord}"</ModalHeader><ModalCloseButton />
+          <ModalBody>
+              {modalDailyBody()}
           </ModalBody>
-
           <ModalFooter>
-          <Button colorScheme='green' constiant='outline' onClick={onShare} >Share</Button>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
+              <Button colorScheme='green' constiant='outline' onClick={onShare}>Share</Button>
+              <Button colorScheme='blue' mr={3} onClick={onClose}>Close</Button>
+          </ModalFooter></> : ""}
+          {unlimited && win ? <><ModalHeader fontSize="5xl" align="center">You Win</ModalHeader><ModalCloseButton />
+          <ModalFooter>
+              <Button colorScheme="blue" onClick={closeAndNewWord} >Play Again</Button>
+          </ModalFooter></> : ""}
+          {unlimited && lose ? <><ModalHeader fontSize="5xl" align="center">You SUCK! </ModalHeader><ModalCloseButton />
+          <ModalBody>The correct word was "{secretWord}"</ModalBody>
+          <ModalFooter>
+              <Button colorScheme="blue" onClick={newUnlimitedWord} >Play Again</Button>
+          </ModalFooter></> : ""}
         </ModalContent>
       </Modal></>
+      
     }
-    // THIS DOESNT WORK
+    
      function newUnlimitedWord() {
         randomInteger.current ++
         refreshBoard()
