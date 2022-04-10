@@ -89,7 +89,7 @@ function Guesses({ unlimited, setUnlimited }) {
         } else {
             setPlayed(false)
         } 
-    },[played, day])
+    },[day])
 
     useEffect(()=> {
         if (win || lose) {
