@@ -82,6 +82,7 @@ function Guesses({ unlimited, setUnlimited }) {
          refreshBoard();
   
     }, [unlimited])
+    console.log("day",day)
 
     useEffect(()=> {
         if (Cookies.get("lastPlayed") === `${day - 88}`) {
@@ -94,9 +95,8 @@ function Guesses({ unlimited, setUnlimited }) {
     useEffect(()=> {
         if (win || lose) {
             onOpen()
-        }
-        if(!unlimited) {
            setPlayed(true)
+
         }
     },[win, lose, unlimited, onOpen])
 
