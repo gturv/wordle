@@ -38,7 +38,7 @@ function Guesses({ unlimited }) {
     const [lose, setLose] = useState(false)
     const [win, setWin] = useState(false)
     const [board, setBoard] = useState('\n')
-    const [played, setPlayed] = useState(false)
+    const [played, setPlayed] = useState(null)
     const [correctFirstLetter, setCorrectFirstLetter] = useState('')
     const [correctSecondLetter, setCorrectSecondLetter] = useState('')
     const [correctThirdLetter, setCorrectThirdLetter] = useState('')
@@ -55,7 +55,7 @@ function Guesses({ unlimited }) {
     //const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
     //const numTimesPlays = Cookies.get("numTimesPlayed")
-    const cookieExists = Cookies.get("guessOne")
+    const cookieExists = Cookies.get("leftAtGuess")
     if (!cookieExists) {
         Cookies.set("numTimesPlayed","0", { expires: 7 })
         Cookies.set("numTimesWon", "0", { expires: 7 })
@@ -70,12 +70,14 @@ function Guesses({ unlimited }) {
         Cookies.set("guessedFive","0", { expires: 7 })
         Cookies.set("guessedSix","0", { expires: 7 })
         Cookies.set("lastPlayed","0", { expires: 7 })
-        Cookies.set("guessOne"," ", { expires: 7 })
-        Cookies.set("guessTwo"," ", { expires: 7 })
-        Cookies.set("guessThree"," ", { expires: 7 })
-        Cookies.set("guessFour"," ", { expires: 7 })
-        Cookies.set("guessFive"," ", { expires: 7 })
-        Cookies.set("guessSix"," ", { expires: 7 })
+        Cookies.set("guessOne","", { expires: 7 })
+        Cookies.set("guessTwo","", { expires: 7 })
+        Cookies.set("guessThree","", { expires: 7 })
+        Cookies.set("guessFour","", { expires: 7 })
+        Cookies.set("guessFive","", { expires: 7 })
+        Cookies.set("guessSix","", { expires: 7 })
+        Cookies.set("incomplete", "false", {expires: 1})
+        Cookies.set("leftAtGuess", "1", {expires: 7})
     }
 
     //console.log("full cookie", Cookies.get())
@@ -129,18 +131,42 @@ function Guesses({ unlimited }) {
    
 
     useEffect(()=> {
-        if (Cookies.get("lastPlayed") === `${day - 88}`) {
-            setPlayed(true)
-        } else {
-            setPlayed(false)
-            Cookies.set("guessOne"," ", { expires: 7 })
-            Cookies.set("guessTwo"," ", { expires: 7 })
-            Cookies.set("guessThree"," ", { expires: 7 })
-            Cookies.set("guessFour"," ", { expires: 7 })
-            Cookies.set("guessFive"," ", { expires: 7 })
-            Cookies.set("guessSix"," ", { expires: 7 })
-        } 
-    },[day])
+        if (!unlimited) {
+            if (Cookies.get("lastPlayed") === `${day - 88}`) {
+                setPlayed(true)
+            }
+            if (Cookies.get("lastPlayed") <= `${day - 88}` && Cookies.get("incomplete") === "true") {
+                setGuessOne(Cookies.get("guessOne"))
+                setGuessTwo(Cookies.get("guessTwo"))
+                setGuessThree(Cookies.get("guessThree"))
+                setGuessFour(Cookies.get("guessFour"))
+                setGuessFive(Cookies.get("guessFive"))
+                setCurrentGuessNumber(parseInt(Cookies.get("leftAtGuess")))
+            }
+            if(played) {
+                setGuessOne(Cookies.get("guessOne"))
+                setGuessTwo(Cookies.get("guessTwo"))
+                setGuessThree(Cookies.get("guessThree"))
+                setGuessFour(Cookies.get("guessFour"))
+                setGuessFive(Cookies.get("guessFive"))
+                setGuessFive(Cookies.get("guessSix"))
+                return
+            }
+            if(Cookies.get("lastPlayed") >= `${day - 88}` && Cookies.get("incomplete") === "false" && played !== true) {
+                return
+            }
+            if(Cookies.get("lastPlayed") >= `${day - 88}` && Cookies.get("incomplete") === "false" && played !== false) {
+                 // haven't played today, reset guess cookies
+                Cookies.set("guessOne","JEWIS", { expires: 1 })
+                Cookies.set("guessTwo","", { expires: 1 })
+                Cookies.set("guessThree","", { expires: 1 })
+                Cookies.set("guessFour","", { expires: 1 })
+                Cookies.set("guessFive","", { expires: 1 })
+                Cookies.set("guessSix","", { expires: 1 })
+            }
+        }
+         
+    },[day, unlimited])
 
     useEffect(()=> {
         if (win || lose) {
@@ -163,7 +189,27 @@ function Guesses({ unlimited }) {
             setGuessFive(Cookies.get("guessFive"))
             setGuessSix(Cookies.get("guessSix"))
         }
-    },[played, unlimited])  
+    },[played, unlimited]) 
+
+/*     useEffect(()=> {
+        setGuessOne(Cookies.get("guessOne"))
+        setGuessTwo(Cookies.get("guessTwo"))
+        setGuessThree(Cookies.get("guessThree"))
+        setGuessFour(Cookies.get("guessFour"))
+        setGuessFive(Cookies.get("guessFive"))
+        setCurrentGuessNumber(parseInt(Cookies.get("leftAtGuess")))
+    },[]) */
+    
+/*     useEffect(()=> {
+        if (Cookies.get("incomplete") === "true" && !unlimited) {
+            setGuessOne(Cookies.get("guessOne"))
+            setGuessTwo(Cookies.get("guessTwo"))
+            setGuessThree(Cookies.get("guessThree"))
+            setGuessFour(Cookies.get("guessFour"))
+            setGuessFive(Cookies.get("guessFive"))
+            setCurrentGuessNumber(parseInt(Cookies.get("leftAtGuess")))
+        }
+    }) */
 
     // <GridItem style={determineSquareBackgroundColor(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="15vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
 /*     const letterBoxes = []
@@ -296,18 +342,32 @@ function Guesses({ unlimited }) {
     function switchSaveGuessToCookie(){
         switch (currentGuessNumber) {
             case 1:
-                return Cookies.set("guessOne", currentGuessWord)
+                console.log("current guess to string", (currentGuessNumber+1).toString())
+                Cookies.set("guessOne", currentGuessWord, {expires:1})
+                Cookies.set("leftAtGuess", (currentGuessNumber+1).toString(), {expires:1})
+                return
             case 2:
-                return Cookies.set("guessTwo", currentGuessWord)
+                Cookies.set("guessTwo", currentGuessWord)
+                console.log("current guess to string", (currentGuessNumber+1).toString())
+                Cookies.set("leftAtGuess", (currentGuessNumber+1).toString(), {expires:1})
+                return
             case 3:
-                return Cookies.set("guessThree", currentGuessWord)
+                Cookies.set("guessThree", currentGuessWord)
+                Cookies.set("leftAtGuess", (currentGuessNumber+1).toString(), {expires:1})
+                return
             case 4:
-                return Cookies.set("guessFour", currentGuessWord)
+                Cookies.set("guessFour", currentGuessWord)
+                Cookies.set("leftAtGuess", (currentGuessNumber+1).toString(), {expires:1})
+                return
             case 5:
-                return Cookies.set("guessFive", currentGuessWord)
+                Cookies.set("guessFive", currentGuessWord)
+                Cookies.set("leftAtGuess", (currentGuessNumber+1).toString(), {expires:1})
+                return
             case 6:
-                return Cookies.set("guessSix", currentGuessWord)
-        
+                Cookies.set("guessSix", currentGuessWord, {expires:1})
+                Cookies.set("leftAtGuess", "0", { expires:1})
+                Cookies.set("incomplete", "false", { expires:1})
+                return
             default:
                 break;
         }
@@ -321,6 +381,7 @@ function Guesses({ unlimited }) {
             setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
             incrementGuessNumCookie(newGuessNum-1)
             switchSaveGuessToCookie()
+            Cookies.set("incomplete", "false", {expires: 1})
             Cookies.set("lastPlayed", `${day - 88}`)
             return setTimeout(() => {setWin(true)},1900)
         }
@@ -330,6 +391,8 @@ function Guesses({ unlimited }) {
         }
         if (!unlimited) {
             switchSaveGuessToCookie()
+            Cookies.set("incomplete", "true", {expires: 1})
+
         }
         setCurrentGuessWord("")
         setCurrentGuessNumber(newGuessNum)
@@ -366,8 +429,9 @@ function Guesses({ unlimited }) {
                 setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
                 if ((currentGuessWord === secretWord) && !unlimited) {
                     incrementGuessNumCookie(6)
+                    Cookies.set("incomplete", "false", {expires: 1})
                     switchSaveGuessToCookie()
-                    Cookies.set("lastPlayed", `${day - 88}`)
+                    Cookies.set("lastPlayed", `${day - 88}`, { expires: 7})
                     return setTimeout(() => {setWin(true)},1900)
                 }
                 if ((currentGuessWord === secretWord) && unlimited) {
@@ -377,6 +441,8 @@ function Guesses({ unlimited }) {
                 if (!unlimited){
                     incrementCookie("numTimesLost")
                     incrementCookie("numTimesPlayed")
+                    switchSaveGuessToCookie()
+                    Cookies.set("incomplete", "false", {expires: 1})
                     Cookies.set("currentStreak", "0", { expires: 7})
                     Cookies.set("lastPlayed", (day-88).toString())
                 }
@@ -705,6 +771,13 @@ function Guesses({ unlimited }) {
     console.log("correct letter", correctFirstLetter,'.', correctSecondLetter,'.', correctThirdLetter,'.', correctFourthLetter,'.', correctFifthLetter)
     console.log("OTHERthan", otherThanFirstIdx, otherThanSecondIdx, otherThanThirdIdx, otherThanFourthIdx, otherThanFifthIdx)
     console.log("WL STATE", currentWordList)
+
+    console.log("leftAt",Cookies.get("leftAtGuess"))
+    console.log("guessOne", Cookies.get("guessOne"))
+    console.log("incomplete", Cookies.get("incomplete"))
+    console.log("played", played)
+    console.log("lastPlayed", Cookies.get("lastPlayed"))
+    console.log(" day and day-88",day,day - 88 )
     
 
 
