@@ -18,7 +18,7 @@ function App() {
         <Header setUnlimited={setUnlimited} handleToggleUnlimited={handleToggleUnlimited} unlimited={unlimited} />
         <hr style={{borderStyle: "solid", position:"absolute", borderColor:"black", borderWidth:"2px", width: "120vw", right:"1px", marginBottom: "8px"}}  />
 
-        <Guesses unlimited={unlimited} setUnlimited={setUnlimited} />
+        <Guesses unlimited={unlimited} />
         
       </Container>
     </ChakraProvider>
