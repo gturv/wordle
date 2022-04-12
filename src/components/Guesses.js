@@ -152,12 +152,12 @@ function Guesses({ unlimited }) {
                 setGuessFive(Cookies.get("guessSix"))
                 return
             }
-            if(Cookies.get("lastPlayed") >= `${day - 88}` && Cookies.get("incomplete") === "false" && played !== true) {
+            if(parseInt(Cookies.get("lastPlayed")) >= (day - 88) && Cookies.get("incomplete") === "false" && !played) {
                 return
             }
-            if(Cookies.get("lastPlayed") >= `${day - 88}` && Cookies.get("incomplete") === "false" && played !== false) {
+            if(parseInt(Cookies.get("lastPlayed")) >= (day - 88) && Cookies.get("incomplete") === "false") {
                  // haven't played today, reset guess cookies
-                Cookies.set("guessOne","JEWIS", { expires: 1 })
+                Cookies.set("guessOne","", { expires: 1 })
                 Cookies.set("guessTwo","", { expires: 1 })
                 Cookies.set("guessThree","", { expires: 1 })
                 Cookies.set("guessFour","", { expires: 1 })
