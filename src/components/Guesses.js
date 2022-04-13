@@ -20,7 +20,7 @@ function Guesses({ unlimited }) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const randomInteger = useRef(Math.floor(Math.random() * 3234))
+    const randomInteger = useRef(Math.floor(Math.random() * 3629))
     const secretWordUnlimited = useRef(wordList[randomInteger.current])
     const secretWordSingle = wordList[day]
     const secretWord = unlimited ? secretWordUnlimited.current : secretWordSingle
@@ -50,7 +50,7 @@ function Guesses({ unlimited }) {
     const [otherThanFourthIdx, setOtherThanFourthIdx] = useState([])
     const [otherThanFifthIdx, setOtherThanFifthIdx] = useState([])
     const [currentWordList, setCurrentWordList] = useState(wordList)
-    const [numPossibilities, setNumPossibilities] = useState(3235)
+    const [numPossibilities, setNumPossibilities] = useState(3630)
     //console.log("GUESS NUM",currentGuessNumber)
     //const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
@@ -107,7 +107,7 @@ function Guesses({ unlimited }) {
         setOtherThanFourthIdx([])
         setOtherThanFifthIdx([])
         setCurrentWordList(wordList)
-        setNumPossibilities(3235)
+        setNumPossibilities(3630)
     }
     useEffect(() => {
          refreshBoard();
@@ -778,6 +778,7 @@ function Guesses({ unlimited }) {
     console.log("played", played)
     console.log("lastPlayed", Cookies.get("lastPlayed"))
     console.log(" day and day-88",day,day - 88 )
+    console.log("numPossibilities", numPossibilities)
     
 
 
