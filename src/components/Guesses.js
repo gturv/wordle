@@ -12,6 +12,7 @@ import '../App.css'
 import Cookies from 'js-cookie'
 
 function Guesses({ unlimited }) {
+    console.log("--------------new Render------------------")
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const diff = now - start;
@@ -50,7 +51,7 @@ function Guesses({ unlimited }) {
     const [otherThanFourthIdx, setOtherThanFourthIdx] = useState([])
     const [otherThanFifthIdx, setOtherThanFifthIdx] = useState([])
     const [currentWordList, setCurrentWordList] = useState(wordList)
-    const [numPossibilities, setNumPossibilities] = useState(3630)
+    const [possibilitiesIdx, setPossibilitiesIdx] = useState(0)
     //console.log("GUESS NUM",currentGuessNumber)
     //const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
@@ -107,29 +108,23 @@ function Guesses({ unlimited }) {
         setOtherThanFourthIdx([])
         setOtherThanFifthIdx([])
         setCurrentWordList(wordList)
-        setNumPossibilities(3630)
     }
     useEffect(() => {
          refreshBoard();
-  
     }, [unlimited])
     //console.log("day",day)
 
-    useEffect(()=> {
-        checkPreviousWordCorrectLetters()
+     useEffect(()=> {
         setCurrentWordList(filterWL(currentWordList))
-        checkPreviousWordCorrectLetters()
-        //setNumPossibilities(currentWordList.length)
-    }, [currentGuessNumber])
+    },[currentGuessNumber, currentGuessWord]) 
 
     useEffect(()=> {
-        setTimeout(()=> {
-            setNumPossibilities(currentWordList.length)
-        }, 1500)
-    },[currentWordList.length])
-        
-   
-
+        if (possibilitiesIdx > currentWordList.length-1) {
+            console.log("NUM POSSIBILITIES IS LARGER - USEEFFECT")
+            setPossibilitiesIdx(0)
+        }
+    },[possibilitiesIdx])
+     
     useEffect(()=> {
         if (!unlimited) {
             if (Cookies.get("lastPlayed") === `${day - 88}`) {
@@ -191,26 +186,6 @@ function Guesses({ unlimited }) {
         }
     },[played, unlimited]) 
 
-/*     useEffect(()=> {
-        setGuessOne(Cookies.get("guessOne"))
-        setGuessTwo(Cookies.get("guessTwo"))
-        setGuessThree(Cookies.get("guessThree"))
-        setGuessFour(Cookies.get("guessFour"))
-        setGuessFive(Cookies.get("guessFive"))
-        setCurrentGuessNumber(parseInt(Cookies.get("leftAtGuess")))
-    },[]) */
-    
-/*     useEffect(()=> {
-        if (Cookies.get("incomplete") === "true" && !unlimited) {
-            setGuessOne(Cookies.get("guessOne"))
-            setGuessTwo(Cookies.get("guessTwo"))
-            setGuessThree(Cookies.get("guessThree"))
-            setGuessFour(Cookies.get("guessFour"))
-            setGuessFive(Cookies.get("guessFive"))
-            setCurrentGuessNumber(parseInt(Cookies.get("leftAtGuess")))
-        }
-    }) */
-
     // <GridItem style={determineSquareBackgroundColor(0,guessOne,1)className='letterGrid' rowSpan={1} colSpan={1}><AspectRatio maxWidth="15vw" ratio={1}><Text align='center' fontSize="5xl">{guessOne[0] || currentGuessWord[0]}</Text></AspectRatio></GridItem>
 /*     const letterBoxes = []
     for (let guessNum of guessNumArray) {
@@ -220,7 +195,7 @@ function Guesses({ unlimited }) {
     } */
     console.log("secretWord", secretWord)
 
-    function switchLetterNotAtIndex(currentGuessWord, idx) {
+    function switchLetterNotAtIndex(idx) {
         switch (idx) {
             case 0:    
                 return setOtherThanFirstIdx(curr => [...curr, currentGuessWord[idx]])
@@ -243,6 +218,7 @@ function Guesses({ unlimited }) {
             if (currentGuessWord[i] === secretWord[i] && !correctLetterCorrectSpot.includes(currentGuessWord[i])) {
                 setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
                 setCorrectLetterWrongSpot(curr => curr.filter(f => f !== currentGuessWord[i] ))
+                currentIndexToCorrectLetter(i)
                 continue
             } // this line is to prevent a bug that would add the correct letter into the wrong spot (condition 3 in this function)
             if (currentGuessWord[i] === secretWord[i] && correctLetterCorrectSpot.includes(currentGuessWord[i])) {
@@ -252,11 +228,11 @@ function Guesses({ unlimited }) {
             if (secretWord.includes(currentGuessWord[i]) && !correctLetterWrongSpot.includes(currentGuessWord[i])) {
                 setCorrectLetterWrongSpot(curr => [...curr, currentGuessWord[i]])
                 // execute function that inserts the letter in a state array that will be used to show this lessis not in this index
-                switchLetterNotAtIndex(currentGuessWord, i)
+                switchLetterNotAtIndex(i)
                 continue
             }
             if (secretWord.includes(currentGuessWord[i]) && correctLetterWrongSpot.includes(currentGuessWord[i])) {
-                switchLetterNotAtIndex(currentGuessWord, i)
+                switchLetterNotAtIndex(i)
                 continue
             }
             if (!secretWord.includes(currentGuessWord[i]) && !incorrectLetter.includes(currentGuessWord[i])) {
@@ -379,7 +355,7 @@ function Guesses({ unlimited }) {
         checkLetters() // adds correct and incorrect letter into state 
         if ((currentGuessWord === secretWord) && !unlimited) {
             setBoard(curr => `Turvle ${day-88} ${currentGuessNumber}/6` + curr)
-            incrementGuessNumCookie(newGuessNum-1)
+            incrementGuessNumCookie(currentGuessNumber)
             switchSaveGuessToCookie()
             Cookies.set("incomplete", "false", {expires: 1})
             Cookies.set("lastPlayed", `${day - 88}`)
@@ -396,7 +372,6 @@ function Guesses({ unlimited }) {
         }
         setCurrentGuessWord("")
         setCurrentGuessNumber(newGuessNum)
-
     }
 
     const submitGuess = () => {
@@ -408,19 +383,19 @@ function Guesses({ unlimited }) {
         }
         switch (currentGuessNumber) {
             case 1:
-                submitGuessHelper(setGuessOne, 2)
+                submitGuessHelper(setGuessOne,2)
                 return
             case 2:
-                submitGuessHelper(setGuessTwo, 3)   
+                submitGuessHelper(setGuessTwo,3)   
                 return 
             case 3:
-                submitGuessHelper(setGuessThree, 4)  
+                submitGuessHelper(setGuessThree,4)  
                 return 
             case 4:
-                submitGuessHelper(setGuessFour, 5)
+                submitGuessHelper(setGuessFour,5)
                 return 
             case 5:
-                submitGuessHelper(setGuessFive, 6)  
+                submitGuessHelper(setGuessFive,6)  
                 return 
             case 6:
                 setGuessSix(currentGuessWord)
@@ -578,74 +553,23 @@ function Guesses({ unlimited }) {
     // {letterBoxes}
     //console.log("played?", played)
 
-    function currentGuessToGuessWord(currentGuessNumber) {
-        switch (currentGuessNumber) {
-            case 1:
-                return guessOne
-            case 2:
-                return guessTwo
-            case 3:
-                return guessThree
-            case 4:
-                return guessFour
-            case 5:
-                return guessFive
-            case 6:
-                return guessSix
-        
-            default:
-                break;
-        }
-    }
-
-     function currentIndexToCorrectLetter(previousGuess, index) {
+    function currentIndexToCorrectLetter(index) {
         switch (index) {
             case 0:
-                return setCorrectFirstLetter(previousGuess[0])
+                return setCorrectFirstLetter(currentGuessWord[0])
             case 1:
-                return setCorrectSecondLetter(previousGuess[1])
+                return setCorrectSecondLetter(currentGuessWord[1])
             case 2:
-                return setCorrectThirdLetter(previousGuess[2])
+                return setCorrectThirdLetter(currentGuessWord[2])
             case 3:
-                return setCorrectFourthLetter(previousGuess[3])
+                return setCorrectFourthLetter(currentGuessWord[3])
             case 4:
-                return setCorrectFifthLetter(previousGuess[4])
+                return setCorrectFifthLetter(currentGuessWord[4])
             default:
                 break
-     }
-    }
-
-    function checkPreviousWordCorrectLetters() {
-        const previousGuess = currentGuessToGuessWord(currentGuessNumber-1)
-        if (currentGuessNumber > 1) {
-            for (let i = 0; i < 5; i++) {
-                if (previousGuess[i] === secretWord[i]) {
-                    currentIndexToCorrectLetter(previousGuess, i) // sets any correct letters to state
-                   // obj[previousGuess[i]] = i
-                    continue
-                }
-    
-            }
         }
     }
-/*            if (secretWord.includes(previousGuess[i])) {
-                obj[previousGuess[i]] = i.toString()
-            } */
-/*     const fil = wordList.filter(word => {
-        return !incorrectLetter.some(incorrect => word.includes(incorrect)) ||
-            correctLetterWrongSpot.every(correct => word.includes(correct)) ||
-            (correctFirstLetter && word.charAt(0) === correctFirstLetter || !correctFirstLetter) ||
-            (correctSecondLetter && word.charAt(1) === correctSecondLetter || !correctSecondLetter) ||
-            (correctThirdLetter && word.charAt(2) === correctThirdLetter || !correctThirdLetter) ||
-            (correctFourthLetter && word.charAt(3) === correctFourthLetter || !correctFourthLetter) ||
-            (correctFifthLetter && word.charAt(4) === correctFifthLetter || !correctFifthLetter) ||
-            (otherThanFirstIdx && otherThanFirstIdx.some(yellowLetter => word.charAt(0) === yellowLetter)) ||
-            (otherThanSecondIdx && otherThanSecondIdx.some(yellowLetter => word.charAt(1) === yellowLetter)) ||
-            (otherThanThirdIdx && otherThanThirdIdx.some(yellowLetter => word.charAt(2) === yellowLetter)) ||
-            (otherThanFourthIdx && otherThanFourthIdx.some(yellowLetter => word.charAt(3) === yellowLetter)) ||
-            (otherThanFifthIdx && otherThanFifthIdx.some(yellowLetter => word.charAt(4) === yellowLetter))
 
-    }) */
 
     // Checks to see if the word fits with correct letters, adds to a list and returns
 /*     function filterWordList() {
@@ -734,43 +658,24 @@ function Guesses({ unlimited }) {
                 ((otherThanThirdIdx && !otherThanThirdIdx.some(yellowLetter => word.charAt(2) === yellowLetter)) || !otherThanThirdIdx) &&
                 ((otherThanFourthIdx && !otherThanFourthIdx.some(yellowLetter => word.charAt(3) === yellowLetter)) || !otherThanFourthIdx) &&
                 ((otherThanFifthIdx && !otherThanFifthIdx.some(yellowLetter => word.charAt(4) === yellowLetter)) || !otherThanFifthIdx)
-
     })
    }
 
     function generateGuess() {
+        const numPossibilities = currentWordList.length - 1
         if (currentGuessNumber === 1) {
-            return setCurrentGuessWord(wordList[Math.floor(Math.random() * 3234)])
+            return setCurrentGuessWord(wordList[Math.floor(Math.random() * numPossibilities)])
         } else {
-            checkPreviousWordCorrectLetters()
-            const fil = filterWL(currentWordList)
-            console.log("FILTERED", fil, fil.length)
-            setCurrentGuessWord(fil[Math.floor(Math.random() * fil.length)] || "XXXXX")
- 
-            checkPreviousWordCorrectLetters()
+            setCurrentGuessWord(currentWordList[possibilitiesIdx] || "XXXXX")
+            setPossibilitiesIdx(possibilitiesIdx + 1)
         }
-/*         switch (currentGuessNumber) {
-            case 1:
-                return setCurrentGuessWord(wordList[Math.floor(Math.random() * 3234)])
-            case 2: 
-                return setCurrentGuessWord(checkPreviousWordCorrectLetters()[0])
-            case 3: 
-                return setCurrentGuessWord(checkPreviousWordCorrectLetters()[0])
-            case 4: 
-                return setCurrentGuessWord(checkPreviousWordCorrectLetters()[0])
-            case 5: 
-                return setCurrentGuessWord(checkPreviousWordCorrectLetters()[0])
-            case 6: 
-                return setCurrentGuessWord(checkPreviousWordCorrectLetters()[0])
-        
-            default:
-                break;
-        } */
     }
-    //console.log(generateGuess())
-    console.log("correct letter", correctFirstLetter,'.', correctSecondLetter,'.', correctThirdLetter,'.', correctFourthLetter,'.', correctFifthLetter)
+
+  /*   console.log("correct letter", correctFirstLetter,'.', correctSecondLetter,'.', correctThirdLetter,'.', correctFourthLetter,'.', correctFifthLetter)
     console.log("OTHERthan", otherThanFirstIdx, otherThanSecondIdx, otherThanThirdIdx, otherThanFourthIdx, otherThanFifthIdx)
-    console.log("WL STATE", currentWordList)
+    console.log("incorrectLetter", incorrectLetter)
+    console.log("currentWordList", currentWordList)
+    console.log("currentWordList.length", currentWordList.length)
 
     console.log("leftAt",Cookies.get("leftAtGuess"))
     console.log("guessOne", Cookies.get("guessOne"))
@@ -778,7 +683,11 @@ function Guesses({ unlimited }) {
     console.log("played", played)
     console.log("lastPlayed", Cookies.get("lastPlayed"))
     console.log(" day and day-88",day,day - 88 )
-    console.log("numPossibilities", numPossibilities)
+    console.log("currentGuessNumber", currentGuessNumber)
+    console.log("StateGuesses", guessOne, guessTwo, guessThree, guessFour, guessFive) */
+    console.log("currentWordList.length", currentWordList.length)
+
+    console.log("possibilitiesIDx", possibilitiesIdx)
     
 
 
@@ -848,7 +757,7 @@ function Guesses({ unlimited }) {
                       : ""} */}
                       {createModal()}
                       {unlimited && !(win || lose) ? <Button onClick={generateGuess} colorScheme="green">Generate Guess</Button> : "" }
-                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {numPossibilities}</Text>}
+                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {currentWordList.length}</Text>}
                       
                     
         </Box>
