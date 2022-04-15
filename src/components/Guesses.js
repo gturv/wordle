@@ -5,7 +5,7 @@ import { Text, Box, Grid, GridItem, AspectRatio, Button, Modal,
     ModalHeader,
     ModalFooter,
     ModalBody,
-    ModalCloseButton, useDisclosure } from "@chakra-ui/react"
+    ModalCloseButton, useDisclosure, Spinner, HStack } from "@chakra-ui/react"
 //import {MdIosShare} from "react-icons/md";
 import wordList from '../wordlist'
 import '../App.css'
@@ -52,7 +52,6 @@ function Guesses({ unlimited }) {
     const [otherThanFifthIdx, setOtherThanFifthIdx] = useState([])
     const [currentWordList, setCurrentWordList] = useState(wordList)
     const [possibilitiesIdx, setPossibilitiesIdx] = useState(0)
-    const [numPos, setNumPos] = useState(3630)
     const [loading, setLoading] = useState(false)
     //console.log("GUESS NUM",currentGuessNumber)
     //const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
@@ -118,11 +117,10 @@ function Guesses({ unlimited }) {
 
      useEffect(()=> {
         setCurrentWordList(filterWL(currentWordList))
-        setNumPos(currentWordList.length)
         setTimeout(() => {
            setLoading(false) 
-        }, 2100);
-    },[currentGuessNumber, currentGuessWord]) 
+        }, 1500);
+    },[currentGuessNumber]) 
 
     useEffect(()=> {
         if (possibilitiesIdx >= currentWordList.length) {
@@ -763,12 +761,12 @@ function Guesses({ unlimited }) {
                      {lose && unlimited ?  <Box align="center"><Text align="center" fontWeight='bold'>You SUCK! The correct word was "{secretWord}"</Text><Button colorScheme="blue" onClick={newUnlimitedWord} >Play Again</Button></Box> : ""}
                      {win && unlimited ? <Box align="center"><Text fontWeight='bold'>You WIN! </Text><Button colorScheme="blue" onClick={newUnlimitedWord} >Play Again</Button></Box>: ""}
                      {win && !unlimited ? <Text align="center" fontWeight='bold'>You WIN! Switch to unlimited to play again </Text>: ""}
-{/*                      {lose && !unlimited ? createModal() : ""}
-                     {win && !unlimited ? createModal()
-                      : ""} */}
                       {createModal()}
+                      <HStack>
                       {unlimited && !(win || lose) ? <Button onClick={generateGuess} colorScheme="green">Generate Guess</Button> : "" }
-                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {loading ? numPos : currentWordList.length}</Text>}
+                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {loading ? <Spinner size="xs" /> : currentWordList.length}</Text>}
+
+                      </HStack>
                       
                     
         </Box>
