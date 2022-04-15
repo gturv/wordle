@@ -52,6 +52,8 @@ function Guesses({ unlimited }) {
     const [otherThanFifthIdx, setOtherThanFifthIdx] = useState([])
     const [currentWordList, setCurrentWordList] = useState(wordList)
     const [possibilitiesIdx, setPossibilitiesIdx] = useState(0)
+    const [numPos, setNumPos] = useState(3630)
+    const [loading, setLoading] = useState(false)
     //console.log("GUESS NUM",currentGuessNumber)
     //const guessNumArray = [guessOne,guessTwo,guessThree,guessFour,guessFive,guessSix]
 
@@ -116,10 +118,14 @@ function Guesses({ unlimited }) {
 
      useEffect(()=> {
         setCurrentWordList(filterWL(currentWordList))
+        setNumPos(currentWordList.length)
+        setTimeout(() => {
+           setLoading(false) 
+        }, 2100);
     },[currentGuessNumber, currentGuessWord]) 
 
     useEffect(()=> {
-        if (possibilitiesIdx > currentWordList.length-1) {
+        if (possibilitiesIdx >= currentWordList.length) {
             console.log("NUM POSSIBILITIES IS LARGER - USEEFFECT")
             setPossibilitiesIdx(0)
         }
@@ -215,10 +221,12 @@ function Guesses({ unlimited }) {
     function checkLetters() { // adds guessed letters into state
         for (let i=0; i < 5; i++) { 
             // if the letter is in the right spot AND the state array doesn't include it
-            if (currentGuessWord[i] === secretWord[i] && !correctLetterCorrectSpot.includes(currentGuessWord[i])) {
-                setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
+            if (currentGuessWord[i] === secretWord[i]) {
                 setCorrectLetterWrongSpot(curr => curr.filter(f => f !== currentGuessWord[i] ))
                 currentIndexToCorrectLetter(i)
+                if (!correctLetterCorrectSpot.includes(currentGuessWord[i])) {
+                    setCorrectLetterCorrectSpot(curr => [...curr, currentGuessWord[i]])
+                }
                 continue
             } // this line is to prevent a bug that would add the correct letter into the wrong spot (condition 3 in this function)
             if (currentGuessWord[i] === secretWord[i] && correctLetterCorrectSpot.includes(currentGuessWord[i])) {
@@ -372,6 +380,7 @@ function Guesses({ unlimited }) {
         }
         setCurrentGuessWord("")
         setCurrentGuessNumber(newGuessNum)
+        setLoading(true)
     }
 
     const submitGuess = () => {
@@ -666,17 +675,14 @@ function Guesses({ unlimited }) {
         if (currentGuessNumber === 1) {
             return setCurrentGuessWord(wordList[Math.floor(Math.random() * numPossibilities)])
         } else {
-            setCurrentGuessWord(currentWordList[possibilitiesIdx] || "XXXXX")
+            setCurrentGuessWord(currentWordList[possibilitiesIdx] || currentWordList[0])
             setPossibilitiesIdx(possibilitiesIdx + 1)
         }
     }
 
-  /*   console.log("correct letter", correctFirstLetter,'.', correctSecondLetter,'.', correctThirdLetter,'.', correctFourthLetter,'.', correctFifthLetter)
-    console.log("OTHERthan", otherThanFirstIdx, otherThanSecondIdx, otherThanThirdIdx, otherThanFourthIdx, otherThanFifthIdx)
-    console.log("incorrectLetter", incorrectLetter)
-    console.log("currentWordList", currentWordList)
-    console.log("currentWordList.length", currentWordList.length)
-
+    //console.log("currentWordList", currentWordList)
+    //console.log("currentWordList.length", currentWordList.length)
+/* 
     console.log("leftAt",Cookies.get("leftAtGuess"))
     console.log("guessOne", Cookies.get("guessOne"))
     console.log("incomplete", Cookies.get("incomplete"))
@@ -685,9 +691,14 @@ function Guesses({ unlimited }) {
     console.log(" day and day-88",day,day - 88 )
     console.log("currentGuessNumber", currentGuessNumber)
     console.log("StateGuesses", guessOne, guessTwo, guessThree, guessFour, guessFive) */
+    console.log("currentWordList", currentWordList)
+
     console.log("currentWordList.length", currentWordList.length)
 
     console.log("possibilitiesIDx", possibilitiesIdx)
+    console.log("correct letter", correctFirstLetter,'.', correctSecondLetter,'.', correctThirdLetter,'.', correctFourthLetter,'.', correctFifthLetter)
+    console.log("OTHERthan", otherThanFirstIdx, otherThanSecondIdx, otherThanThirdIdx, otherThanFourthIdx, otherThanFifthIdx)
+    console.log("incorrectLetter", incorrectLetter)
     
 
 
@@ -757,7 +768,7 @@ function Guesses({ unlimited }) {
                       : ""} */}
                       {createModal()}
                       {unlimited && !(win || lose) ? <Button onClick={generateGuess} colorScheme="green">Generate Guess</Button> : "" }
-                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {currentWordList.length}</Text>}
+                      {!unlimited  && played ? <Text>Come back tomorrow</Text> :<Text>Possibilities: {loading ? numPos : currentWordList.length}</Text>}
                       
                     
         </Box>
