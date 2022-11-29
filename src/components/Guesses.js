@@ -120,6 +120,7 @@ function Guesses({ unlimited }) {
         setTimeout(() => {
            setLoading(false) 
         }, 1500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[currentGuessNumber]) 
 
     useEffect(()=> {
@@ -127,7 +128,7 @@ function Guesses({ unlimited }) {
             console.log("NUM POSSIBILITIES IS LARGER - USEEFFECT")
             setPossibilitiesIdx(0)
         }
-    },[possibilitiesIdx])
+    },[currentWordList.length, possibilitiesIdx])
      
     useEffect(()=> {
         if (!unlimited) {
@@ -165,7 +166,7 @@ function Guesses({ unlimited }) {
             }
         }
          
-    },[day, unlimited])
+    },[day, unlimited, played])
 
     useEffect(()=> {
         if (win || lose) {
@@ -552,7 +553,7 @@ function Guesses({ unlimited }) {
       
     }
     
-     function newUnlimitedWord() {
+    function newUnlimitedWord() {
         randomInteger.current ++
         refreshBoard()
         secretWordUnlimited.current = wordList[randomInteger.current]
